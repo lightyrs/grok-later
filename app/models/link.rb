@@ -50,6 +50,10 @@ class Link < ActiveRecord::Base
     @meta.meta_og_image
   end
 
+  def share_count(network= "all")
+    ShareCounts.send(network.to_sym, url)
+  end
+
   private
 
   def url_meta(url)
