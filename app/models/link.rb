@@ -2,6 +2,8 @@ class Link < ActiveRecord::Base
 
   attr_accessor :analyzed_at
 
+  validates :url, :presence => true
+
   def initialize(url)
     @meta = url_meta(url)
   end
