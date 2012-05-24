@@ -1,0 +1,4 @@
+= render @user
+
+= table_for @user.identities do |t|
+  = t.data :provider, :uid, :username, :bio, :email, :profile_url, :location

@@ -1,0 +1,7 @@
+development:
+  app_id: FB_APP_ID
+  secret_key: FB_APP_SECRET
+test:
+  ...
+production:
+  ...

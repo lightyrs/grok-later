@@ -1,0 +1,2 @@
+DROPBOX_KEY = "df1php648t3wkyd"
+DROPBOX_SECRET = "sosw543su21e60c"
