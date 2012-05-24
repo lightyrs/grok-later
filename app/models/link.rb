@@ -50,8 +50,8 @@ class Link < ActiveRecord::Base
     @meta.meta_og_image
   end
 
-  def share_count(network= "all")
-    ShareCounts.send(network.to_sym, url)
+  def share_count(network="all")
+    counts.instance_of? Hash ? counts.values.compact.inject(:+) : counts rescue 0
   end
 
   private
