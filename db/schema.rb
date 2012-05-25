@@ -13,6 +13,11 @@
 
 ActiveRecord::Schema.define(:version => 20120525103602) do
 
+  create_table "curiosities", :force => true do |t|
+    t.integer "subject_id", :null => false
+    t.integer "user_id",    :null => false
+  end
+
   create_table "identities", :force => true do |t|
     t.string   "uid"
     t.string   "bio"
@@ -34,7 +39,7 @@ ActiveRecord::Schema.define(:version => 20120525103602) do
   add_index "identities", ["user_id"], :name => "index_identities_on_user_id"
 
   create_table "links", :force => true do |t|
-    t.string   "href"
+    t.string   "href",        :null => false
     t.string   "title"
     t.text     "links"
     t.text     "description"
@@ -49,6 +54,8 @@ ActiveRecord::Schema.define(:version => 20120525103602) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
+
+  add_index "links", ["href"], :name => "index_links_on_href", :unique => true
 
   create_table "subjects", :force => true do |t|
     t.string   "name",       :null => false
