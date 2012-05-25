@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120525103602) do
+ActiveRecord::Schema.define(:version => 20120525182406) do
 
   create_table "curiosities", :force => true do |t|
     t.integer "subject_id", :null => false
@@ -41,9 +41,14 @@ ActiveRecord::Schema.define(:version => 20120525103602) do
   create_table "links", :force => true do |t|
     t.string   "href",        :null => false
     t.string   "title"
+    t.text     "authors"
+    t.string   "favicon"
+    t.text     "lede"
     t.text     "links"
     t.text     "description"
     t.text     "keywords"
+    t.text     "body_html"
+    t.text     "body_text"
     t.string   "image"
     t.text     "images"
     t.string   "feed"
@@ -56,6 +61,11 @@ ActiveRecord::Schema.define(:version => 20120525103602) do
   end
 
   add_index "links", ["href"], :name => "index_links_on_href", :unique => true
+
+  create_table "references", :force => true do |t|
+    t.integer "subject_id", :null => false
+    t.integer "link_id",    :null => false
+  end
 
   create_table "subjects", :force => true do |t|
     t.string   "name",       :null => false

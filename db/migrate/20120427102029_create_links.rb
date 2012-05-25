@@ -4,9 +4,14 @@ class CreateLinks < ActiveRecord::Migration
     create_table :links do |t|
       t.string     :href, :null => false
       t.string     :title
+      t.text       :authors
+      t.string     :favicon
+      t.text       :lede
       t.text       :links
       t.text       :description
       t.text       :keywords
+      t.text       :body_html
+      t.text       :body_text
       t.string     :image
       t.text       :images
       t.string     :feed

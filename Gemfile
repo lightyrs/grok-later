@@ -1,5 +1,7 @@
 source 'http://rubygems.org'
 
+gem 'metainspector'
+
 gem 'rails', '3.2.3'
 gem 'mysql2', '>= 0.3'
 gem 'thin'
@@ -16,12 +18,19 @@ gem 'omniauth-instagram'
 gem 'omniauth-dropbox'
 gem 'omniauth-rdio'
 
-gem 'metainspector'
+gem 'sanitize'
+
+gem 'pismo', :git => 'git://github.com/hcshiv/pismo.git'
 gem 'share_counts', :git => 'git://github.com/travid/share_counts.git'
 
 gem 'duck-duck-go'
+gem 'phrasie'
+gem 'term-extract'
+
+gem 'ruby-readability', :require => 'readability'
 
 group :development, :test do
+  gem 'debugger'
   gem 'colored'
   gem 'itslog'
   gem 'wirble'
@@ -33,6 +42,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+gem 'barista'
 gem 'sass-rails',   '~> 3.2.3'
 gem 'jquery-rails'
 
