@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120427172231) do
+ActiveRecord::Schema.define(:version => 20120525103602) do
 
   create_table "identities", :force => true do |t|
     t.string   "uid"
@@ -48,6 +48,20 @@ ActiveRecord::Schema.define(:version => 20120427172231) do
     t.datetime "analyzed_at"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "subjects", :force => true do |t|
+    t.string   "name",       :null => false
+    t.text     "abstract"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "subjects", ["name"], :name => "index_subjects_on_name", :unique => true
+
+  create_table "subjects_users", :force => true do |t|
+    t.integer "subject_id", :null => false
+    t.integer "user_id",    :null => false
   end
 
   create_table "users", :force => true do |t|

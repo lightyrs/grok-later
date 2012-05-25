@@ -2,7 +2,7 @@ class CreateLinks < ActiveRecord::Migration
 
   def change
     create_table :links do |t|
-      t.string     :href
+      t.string     :href, :null => false
       t.string     :title
       t.text       :links
       t.text       :description
