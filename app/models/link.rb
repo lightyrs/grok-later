@@ -6,6 +6,7 @@ class Link < ActiveRecord::Base
 
   validates :href, :presence => true
 
+
   def href_metadata
     MetaInspector.new(href).to_hash rescue nil
   end
@@ -14,6 +15,7 @@ class Link < ActiveRecord::Base
     counts = ShareCounts.send(network.to_sym, href)
     counts.instance_of?(Hash) ? counts.values.compact.inject(:+) : counts rescue 0
   end
+  
 
   private
 
@@ -22,6 +24,9 @@ class Link < ActiveRecord::Base
   end
 
   def set_metadata
+
+    return true if persisted? and analyzed_at > 1.week.ago
+
     @meta = get_metadata
 
     self.title = @meta.title
