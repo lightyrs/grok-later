@@ -1,5 +1,3 @@
-require 'share_counts'
-
 class Link < ActiveRecord::Base
 
   before_create :set_metadata
@@ -9,10 +7,11 @@ class Link < ActiveRecord::Base
   validates :href, :presence => true
 
   def href_metadata
-    MetaInspector.new(href).to_hash
+    MetaInspector.new(href).to_hash rescue nil
   end
 
-  def total_shares(network = "all")
+  def shares(network = "all")
+    counts = ShareCounts.send(network.to_sym, href)
     counts.instance_of? Hash ? counts.values.compact.inject(:+) : counts rescue 0
   end
 
@@ -34,7 +33,7 @@ class Link < ActiveRecord::Base
     self.feed = @meta.feed
     self.og_title = @meta.meta_og_title
     self.og_image = @meta.meta_og_image
-    self.share_count = total_shares
+    self.share_count = shares
     self.analyzed_at = DateTime.now
   end
 end
