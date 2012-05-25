@@ -10,9 +10,9 @@ class Link < ActiveRecord::Base
     MetaInspector.new(href).to_hash rescue nil
   end
 
-  def shares(network = "all")
+  def shares(network="all")
     counts = ShareCounts.send(network.to_sym, href)
-    counts.instance_of? Hash ? counts.values.compact.inject(:+) : counts rescue 0
+    counts.instance_of?(Hash) ? counts.values.compact.inject(:+) : counts rescue 0
   end
 
   private
@@ -26,8 +26,8 @@ class Link < ActiveRecord::Base
 
     self.title = @meta.title
     self.links = @meta.absolute_links
-    self.description = @meta.meta["name"]["description"]
-    self.keywords = @meta.meta["name"]["keywords"]
+    self.description = @meta.meta["name"]["description"] rescue nil
+    self.keywords = @meta.meta["name"]["keywords"] rescue nil
     self.image = @meta.image
     self.images = @meta.absolute_images
     self.feed = @meta.feed
