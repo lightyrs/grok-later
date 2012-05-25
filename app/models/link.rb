@@ -6,20 +6,16 @@ class Link < ActiveRecord::Base
 
   validates :href, :presence => true, :uniqueness => true
 
-  def href_metadata
-    MetaInspector.new(href) rescue nil
-  end
-
   def shares(network="all")
     counts = ShareCounts.send(network.to_sym, href)
     counts.instance_of?(Hash) ? counts.values.compact.inject(:+) : counts rescue 0
   end
 
-  private
-
   def get_metadata
-    href_metadata
+    MetaInspector.new(href) rescue nil
   end
+
+  private 
 
   def set_metadata
 

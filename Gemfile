@@ -19,6 +19,8 @@ gem 'omniauth-rdio'
 gem 'metainspector'
 gem 'share_counts', :git => 'git://github.com/travid/share_counts.git'
 
+gem 'duck-duck-go'
+
 group :development, :test do
   gem 'colored'
   gem 'itslog'

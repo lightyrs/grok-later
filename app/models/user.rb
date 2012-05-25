@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
 
   has_many :identities, :dependent => :destroy
 
-  has_many :curiosities, :dependent => :destroy, :class_name => "Curiosity"
+  has_many :curiosities, :dependent => :destroy
   has_many :subjects, :through => :curiosities
 
   def avatar

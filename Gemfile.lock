@@ -52,6 +52,9 @@ GEM
     colored (1.2)
     curb (0.8.0)
     daemons (1.1.8)
+    duck-duck-go (1.1.2)
+      httpclient
+      json
     erubis (2.7.0)
     eventmachine (0.12.10)
     execjs (1.4.0)
@@ -68,6 +71,7 @@ GEM
     hike (1.2.1)
     hirb (0.6.2)
     httpauth (0.1)
+    httpclient (2.2.5)
     i18n (0.6.0)
     itslog (0.6.1)
     journey (1.0.3)
@@ -188,6 +192,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   colored
   curb
+  duck-duck-go
   haml (>= 3.1.4)
   haml-rails (>= 0.3.4)
   hirb
