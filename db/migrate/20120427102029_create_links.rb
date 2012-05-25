@@ -16,5 +16,6 @@ class CreateLinks < ActiveRecord::Migration
       t.datetime   :analyzed_at    
       t.timestamps
     end
+    add_index :links, :href, :unique => true
   end
 end
