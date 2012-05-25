@@ -1,66 +1,40 @@
+require 'share_counts'
+
 class Link < ActiveRecord::Base
 
-  attr_accessor :analyzed_at
+  before_create :set_metadata
 
-  validates :url, :presence => true
+  attr_accessor :meta
 
-  def initialize(url)
-    @meta = url_meta(url)
+  validates :href, :presence => true
+
+  def href_metadata
+    MetaInspector.new(href).to_hash
   end
 
-  def url
-    @meta.url
-  end
-
-  def scheme
-    @meta.scheme
-  end
-
-  def title
-    @meta.title
-  end
-
-  def links
-    @meta.absolute_links
-  end
-
-  def description
-    @meta.description
-  end
-
-  def keywords
-    @meta.meta_keywords
-  end
-
-  def image
-    @meta.image
-  end
-
-  def images
-    @meta.absolute_images
-  end
-
-  def feed
-    @meta.feed
-  end
-
-  def og_title
-    @meta.meta_og_title
-  end
-
-  def og_image
-    @meta.meta_og_image
-  end
-
-  def share_count(network="all")
+  def total_shares(network = "all")
     counts.instance_of? Hash ? counts.values.compact.inject(:+) : counts rescue 0
   end
 
   private
 
-  def url_meta(url)
-    MetaInspector.new(url).tap do |mi|
-      @analyzed_at = DateTime.now
-    end
+  def get_metadata
+    OpenStruct.new(href_metadata)
+  end
+
+  def set_metadata
+    @meta = get_metadata
+
+    self.title = @meta.title
+    self.links = @meta.absolute_links
+    self.description = @meta.meta["name"]["description"]
+    self.keywords = @meta.meta["name"]["keywords"]
+    self.image = @meta.image
+    self.images = @meta.absolute_images
+    self.feed = @meta.feed
+    self.og_title = @meta.meta_og_title
+    self.og_image = @meta.meta_og_image
+    self.share_count = total_shares
+    self.analyzed_at = DateTime.now
   end
 end

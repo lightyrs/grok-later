@@ -1,7 +1,7 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 
 gem 'rails', '3.2.3'
-gem 'mysql2'
+gem 'mysql2', '>= 0.3'
 gem 'thin'
 
 gem 'curb'
@@ -24,8 +24,6 @@ group :development, :test do
   gem 'itslog'
   gem 'wirble'
   gem 'hirb'
-  gem 'pry'
-  gem 'pry-rails'
 end
 
 group :assets do

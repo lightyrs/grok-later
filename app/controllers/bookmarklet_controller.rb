@@ -1,6 +1,10 @@
 class BookmarkletController < ApplicationController
 
-  before_filter :find_or_create_link
+  before_filter :find_or_create_link, :only => [ :start, :add ]
+
+  def index
+
+  end
 
   def start   
 
@@ -13,6 +17,6 @@ class BookmarkletController < ApplicationController
   private
 
   def find_or_create_link
-    @link = Link.find_or_create_by_url params[:url]
+    @link = Link.find_by_href params[:url]
   end
 end

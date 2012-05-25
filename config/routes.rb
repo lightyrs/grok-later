@@ -1,7 +1,8 @@
 GrokLater::Application.routes.draw do
 
-  get '/bookmarklet/start', to: 'bookmarklet#start' 
-  get '/bookmarklet/add', to: 'bookmarklet#add'
+  get '/bookmarklet', to: 'bookmarklet#index', as: 'bookmarklet'
+  get '/bookmarklet/start', to: 'bookmarklet#start', as: 'bookmarklet_start'
+  get '/bookmarklet/add', to: 'bookmarklet#add', as: 'bookmarklet_add'
 
   get 'users/show'
 
