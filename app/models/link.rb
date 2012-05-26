@@ -68,11 +68,11 @@ class Link < ActiveRecord::Base
 
   def set_subjects
     most_eligible_subjects(3).each do |candidate|
-      self.subjects << Subject.find_or_create_by_name(candidate) rescue false
+      self.subjects << Subject.find_or_create_by_name(candidate) rescue nil
     end
   end
 
   def subject_samples
-    "#{title} #{description} #{keywords} #{og_title} #{body_text} #{lede}"
+    "#{title}. #{description}. #{keywords}. #{og_title}. #{body_text}. #{lede}."
   end
 end

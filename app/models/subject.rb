@@ -2,7 +2,7 @@ require 'duck_duck_go'
 
 class Subject < ActiveRecord::Base
 
-  before_save :set_abstract
+  before_create :set_abstract
 
   validates :name, :presence => true, :uniqueness => true
 
