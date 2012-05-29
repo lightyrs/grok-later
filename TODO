@@ -1,4 +1,4 @@
-1) Fire off the grok later automatically on a knowledge 
+1) Fire off the grok later automatically? on a knowledge 
    provider search (google search for "shel silverstein" 
    => automatically fire grok later adding 
    "Shel Silverstein" as a Subject)
