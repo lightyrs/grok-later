@@ -15,11 +15,12 @@ class Link < ActiveRecord::Base
   has_many :subjects, :through => :references
 
   def most_eligible_subjects(count=1)
-    subject_candidates.first(count)
+    subject_candidates.sort_by_item_freq.first(count)
   end
 
   def subject_candidates
-    (terms + phrases).reject { |t| t.size <= 2 }
+    Rails.logger.debug(terms + phrases)
+    (terms + phrases).reject { |t| t.to_s.size <= 2 }
   end
 
   def shares(network="all")
@@ -41,13 +42,21 @@ class Link < ActiveRecord::Base
   end
 
   def terms
-    TermExtract.extract(subject_samples).sort_by(&:last).
-        reverse.map(&:first)
+    by_desc_frequency = TermExtract.extract(subject_samples).sort_by(&:last).reverse
+    by_desc_frequency.map do |term_point|
+      weighted = []
+      eval("#{term_point.last}.times { |_| weighted.push(term_point.first) }")
+      weighted
+    end.flatten
   end
 
   def phrases
-    extractor.phrases(subject_samples).sort_by(&:second).
-        reverse.map(&:first)
+    by_desc_frequency = extractor.phrases(subject_samples).sort_by(&:second).reverse
+    by_desc_frequency.map do |term_point_wcount|
+      weighted = []
+      eval("#{term_point_wcount.second}.times { |_| weighted.push(term_point_wcount.first) }")
+      weighted
+    end.flatten
   end
 
   private 
@@ -77,12 +86,13 @@ class Link < ActiveRecord::Base
 
   def set_subjects
     most_eligible_subjects(3).each do |candidate|
+      puts "\n#{candidate}\n"
       self.subjects << Subject.find_or_create_by_name(candidate) rescue nil
     end
   end
 
   def subject_samples
-    "#{title}. #{description}. #{keywords}. #{og_title}. #{lede}."
+    "#{title}   #{title}   #{description}   #{keywords}   #{og_title}   #{lede}"
   end
 
   def extractor
