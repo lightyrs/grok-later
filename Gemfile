@@ -30,16 +30,16 @@ gem 'similar_text'
 
 gem 'ruby-readability', :require => 'readability'
 
-group :development do
-  gem 'lolcommits'
-end
-
 group :development, :test do
   gem 'debugger'
   gem 'colored'
   gem 'itslog'
   gem 'wirble'
   gem 'hirb'
+end
+
+group :development do
+  gem 'lolcommits'
 end
 
 group :assets do
