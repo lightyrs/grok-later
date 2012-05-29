@@ -19,7 +19,6 @@ class Link < ActiveRecord::Base
   end
 
   def subject_candidates
-    Rails.logger.debug(terms + phrases)
     (terms + phrases).reject { |t| t.to_s.size <= 2 }
   end
 
@@ -59,7 +58,7 @@ class Link < ActiveRecord::Base
     end.flatten
   end
 
-  private 
+  private
 
   def set_metadata
 
@@ -85,8 +84,7 @@ class Link < ActiveRecord::Base
   end
 
   def set_subjects
-    most_eligible_subjects(3).each do |candidate|
-      puts "\n#{candidate}\n"
+    most_eligible_subjects.each do |candidate|
       self.subjects << Subject.find_or_create_by_name(candidate) rescue nil
     end
   end

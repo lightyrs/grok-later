@@ -38,6 +38,10 @@ group :development, :test do
   gem 'hirb'
 end
 
+group :development do
+  gem 'lolcommits'
+end
+
 group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
