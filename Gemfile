@@ -26,6 +26,7 @@ gem 'share_counts', :git => 'git://github.com/travid/share_counts.git'
 gem 'duck-duck-go'
 gem 'phrasie'
 gem 'term-extract'
+gem 'similar_text'
 
 gem 'ruby-readability', :require => 'readability'
 

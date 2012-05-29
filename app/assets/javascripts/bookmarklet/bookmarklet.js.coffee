@@ -2,7 +2,7 @@ d = document
 e = encodeURIComponent
 u = e(location.href)
 r = Math.random()
-b = #{bookmarklet_path}
+b = "http://groklater.com/bookmarklet"
 if d.body
   s = d.createElement("script")
   s.src = b + "/start?url=" + u + "&r=" + r

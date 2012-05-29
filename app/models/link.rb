@@ -19,8 +19,7 @@ class Link < ActiveRecord::Base
   end
 
   def subject_candidates
-    TermExtract.extract(subject_samples).sort_by(&:last).
-        reverse.map(&:first).reject{|t| t.size <= 2 }
+    (terms + phrases).reject { |t| t.size <= 2 }
   end
 
   def shares(network="all")
@@ -39,6 +38,16 @@ class Link < ActiveRecord::Base
 
   def get_extended_metadata
     Pismo::Document.new(href) rescue nil
+  end
+
+  def terms
+    TermExtract.extract(subject_samples).sort_by(&:last).
+        reverse.map(&:first)
+  end
+
+  def phrases
+    extractor.phrases(subject_samples).sort_by(&:second).
+        reverse.map(&:first)
   end
 
   private 
@@ -73,6 +82,10 @@ class Link < ActiveRecord::Base
   end
 
   def subject_samples
-    "#{title}. #{description}. #{keywords}. #{og_title}. #{body_text}. #{lede}."
+    "#{title}. #{description}. #{keywords}. #{og_title}. #{lede}."
+  end
+
+  def extractor
+    Phrasie::Extractor.new
   end
 end

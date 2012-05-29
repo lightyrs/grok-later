@@ -1,0 +1,20 @@
+common: &common
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  pool: 5
+  username: root
+  password: matt22
+  socket: /tmp/mysql.sock
+
+development:
+  <<: *common
+  database: grok-later_development
+
+test:
+  <<: *common
+  database: grok-later_test
+
+production:
+  <<: *common
+  database: grok-later_production
