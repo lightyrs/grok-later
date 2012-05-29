@@ -19,11 +19,21 @@ class Subject < ActiveRecord::Base
 
   private
 
-  def set_abstract  
+  def set_abstract
     if abstract = get_abstract
-      self.abstract = abstract.abstract_text ||
-      self.abstract = abstract.related_topics.values.map(&:first).map(&:text)
+      correct_case(abstract.heading)
+      self.abstract = parse_ddg_abstract(abstract).to_s
     end
-    self.destroy if self.abstract.empty?
+  end
+
+  def parse_ddg_abstract(abstract)
+    abstract.abstract_text ||
+    abstract.definition ||
+    abstract.related_topics.values.map(&:first).map(&:text)
+  end
+
+  def correct_case(ddg_heading)
+    return ddg_heading unless ddg_heading.present?
+    self.name = ddg_heading if self.name.match(/\A#{Regexp.quote(ddg_heading)}\z/i)
   end
 end

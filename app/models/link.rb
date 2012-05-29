@@ -5,7 +5,7 @@ require 'open-uri'
 class Link < ActiveRecord::Base
 
   before_save    :set_metadata
-  before_create  :set_subjects
+  after_create   :set_subjects
 
   attr_accessor :meta, :doc
 
@@ -14,12 +14,13 @@ class Link < ActiveRecord::Base
   has_many :references, :dependent => :destroy
   has_many :subjects, :through => :references
 
-  def most_eligible_subjects(count=1)
-    subject_candidates.sort_by_item_freq.first(count)
+  def sorted_candidates
+    subject_candidates.sort_by_item_freq.last
   end
 
   def subject_candidates
-    (terms + phrases).reject { |t| t.to_s.size <= 2 }
+    (terms + phrases).reject { |t| t.to_s.size <= 2 }.
+        collect { |t| t.gsub(/#{Regexp.quote(domain)} ?/i, "") }
   end
 
   def shares(network="all")
@@ -41,8 +42,7 @@ class Link < ActiveRecord::Base
   end
 
   def terms
-    by_desc_frequency = TermExtract.extract(subject_samples).sort_by(&:last).reverse
-    by_desc_frequency.map do |term_point|
+    TermExtract.extract(subject_samples).map do |term_point|
       weighted = []
       eval("#{term_point.last}.times { |_| weighted.push(term_point.first) }")
       weighted
@@ -50,8 +50,7 @@ class Link < ActiveRecord::Base
   end
 
   def phrases
-    by_desc_frequency = extractor.phrases(subject_samples).sort_by(&:second).reverse
-    by_desc_frequency.map do |term_point_wcount|
+    extractor.phrases(subject_samples).map do |term_point_wcount|
       weighted = []
       eval("#{term_point_wcount.second}.times { |_| weighted.push(term_point_wcount.first) }")
       weighted
@@ -77,20 +76,28 @@ class Link < ActiveRecord::Base
     self.feed = @meta.feed
     self.og_title = @meta.meta_og_title
     self.og_image = @meta.meta_og_image
-    self.share_count = shares
-    self.body_html = extracted_html
-    self.body_text = Sanitize.clean(body_html).squish rescue ''
+    self.share_count = shares rescue 0
+    self.body_html = @meta.parsed_document rescue extracted_html rescue ''
+    self.body_text = Sanitize.clean(body_html.text).squish rescue ''
     self.analyzed_at = DateTime.now
   end
 
   def set_subjects
-    most_eligible_subjects.each do |candidate|
-      self.subjects << Subject.find_or_create_by_name(candidate) rescue nil
-    end
+    self.subjects.find_or_create_by_name(sorted_candidates)
   end
 
   def subject_samples
-    "#{title}   #{title}   #{description}   #{keywords}   #{og_title}   #{lede}"
+    <<-eos
+      #{title}   #{title}   #{title}   #{title}   #{title}
+      #{description}   #{description}   #{description}
+      #{og_title}   #{og_title}   #{og_title}
+      #{keywords}   #{keywords}
+      #{lede}   #{lede}
+    eos
+  end
+
+  def domain
+    href.gsub(/.{4,7}\/\//, "").split("/").first.gsub(/\.[a-zA-Z]{2,5}/, "")
   end
 
   def extractor
