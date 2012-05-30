@@ -1,7 +1,5 @@
 source 'http://rubygems.org'
 
-gem 'metainspector'
-
 gem 'rails', '3.2.3'
 gem 'mysql2', '>= 0.3'
 gem 'thin'
@@ -22,6 +20,8 @@ gem 'sanitize'
 
 gem 'pismo', :git => 'git://github.com/hcshiv/pismo.git'
 gem 'share_counts', :git => 'git://github.com/travid/share_counts.git'
+gem 'domainatrix'
+gem 'metainspector'
 
 gem 'duck-duck-go'
 gem 'phrasie'

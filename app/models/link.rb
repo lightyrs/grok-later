@@ -15,12 +15,12 @@ class Link < ActiveRecord::Base
   has_many :subjects, :through => :references
 
   def sorted_candidates
-    subject_candidates.sort_by_item_freq.last
+    subject_candidates.sort_by_item_freq
   end
 
   def subject_candidates
     (terms + phrases).reject { |t| t.to_s.size <= 2 }.
-        collect { |t| t.gsub(/#{Regexp.quote(domain)} ?/i, "") }
+                      reject { |t| t.match(/#{Regexp.quote(domain)} ?/i) }
   end
 
   def shares(network="all")
@@ -53,7 +53,7 @@ class Link < ActiveRecord::Base
     extractor.phrases(subject_samples).map do |term_point_wcount|
       weighted = []
       eval("#{term_point_wcount.second}.times { |_| weighted.push(term_point_wcount.first) }")
-      weighted
+      weighted    
     end.flatten
   end
 
@@ -65,6 +65,7 @@ class Link < ActiveRecord::Base
     @doc = get_extended_metadata
 
     self.title = @meta.title
+    self.domain = Domainatrix.parse(href).domain rescue ''
     self.links = @meta.absolute_links
     self.authors = @doc.authors
     self.favicon = @doc.favicon
@@ -83,7 +84,7 @@ class Link < ActiveRecord::Base
   end
 
   def set_subjects
-    self.subjects.find_or_create_by_name(sorted_candidates)
+    self.subjects.find_or_create_by_name(sorted_candidates.first)
   end
 
   def subject_samples
@@ -94,10 +95,6 @@ class Link < ActiveRecord::Base
       #{keywords}   #{keywords}
       #{lede}   #{lede}
     eos
-  end
-
-  def domain
-    href.gsub(/.{4,7}\/\//, "").split("/").first.gsub(/\.[a-zA-Z]{2,5}/, "")
   end
 
   def extractor

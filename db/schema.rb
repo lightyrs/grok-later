@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(:version => 20120525182406) do
   create_table "links", :force => true do |t|
     t.string   "href",        :null => false
     t.string   "title"
+    t.string   "domain"
     t.text     "authors"
     t.string   "favicon"
     t.text     "lede"
