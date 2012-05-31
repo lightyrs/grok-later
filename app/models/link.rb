@@ -4,6 +4,8 @@ require 'open-uri'
 
 class Link < ActiveRecord::Base
 
+  serialize :keywords
+
   before_save    :set_metadata
   after_create   :set_subjects
 
@@ -14,11 +16,24 @@ class Link < ActiveRecord::Base
   has_many :references, :dependent => :destroy
   has_many :subjects, :through => :references
 
+  def likely_subject
+    "Source::#{domain.classify}".constantize.extract_query(href)
+  rescue NameError
+    sorted_candidates.first
+  end
+
   def sorted_candidates
-    subject_candidates.sort_by_item_freq
+    strings = subject_candidates.sort_by_item_freq
+    strings.first(5).sort_by do |string|
+      (string.similar(href).to_f + string.similar(title).to_f).ceil
+    end.reverse
+  rescue
+    strings
   end
 
   def subject_candidates
+    logger.debug(terms.inspect.red_on_white)
+    logger.debug(phrases.inspect.blue_on_white)
     (terms + phrases).reject { |t| t.to_s.size <= 2 }.
                       reject { |t| t.match(/#{Regexp.quote(domain)} ?/i) }
   end
@@ -42,22 +57,26 @@ class Link < ActiveRecord::Base
   end
 
   def terms
-    TermExtract.extract(subject_samples).map do |term_point|
+    TermExtract.extract(subject_samples).map do |tp|
       weighted = []
-      eval("#{term_point.last}.times { |_| weighted.push(term_point.first) }")
+      eval("#{tp.last}.times { |_| weighted.push(tp.first) }")
       weighted
     end.flatten
   end
 
   def phrases
-    extractor.phrases(subject_samples).map do |term_point_wcount|
+    extractor.phrases(subject_samples).map do |tpw|
       weighted = []
-      eval("#{term_point_wcount.second}.times { |_| weighted.push(term_point_wcount.first) }")
+      eval("#{tpw.second}.times { |_| weighted.push(tpw.first) }")
       weighted    
     end.flatten
   end
 
-  private
+  def _domain
+    Domainatrix.parse(href).domain
+  end
+
+  #private
 
   def set_metadata
 
@@ -65,36 +84,43 @@ class Link < ActiveRecord::Base
     @doc = get_extended_metadata
 
     self.title = @meta.title
-    self.domain = Domainatrix.parse(href).domain rescue ''
+    self.domain = _domain rescue ''
     self.links = @meta.absolute_links
     self.authors = @doc.authors
     self.favicon = @doc.favicon
     self.lede = @doc.lede
-    self.description = @meta.description rescue ''
-    self.keywords = @meta.meta_keywords + @doc.keywords rescue @doc.keywords rescue []
+    self.description = @meta.description rescue @doc.description rescue ''
+    self.keywords = @doc.keywords rescue []
     self.image = @meta.image
     self.images = @meta.absolute_images
     self.feed = @meta.feed
     self.og_title = @meta.meta_og_title
     self.og_image = @meta.meta_og_image
     self.share_count = shares rescue 0
-    self.body_html = @meta.parsed_document rescue extracted_html rescue ''
-    self.body_text = Sanitize.clean(body_html.text).squish rescue ''
+    self.body_html = @doc.html_body rescue @meta.parsed_document rescue ''
+    self.body_text = @doc.body rescue ''
     self.analyzed_at = DateTime.now
   end
 
   def set_subjects
-    self.subjects.find_or_create_by_name(sorted_candidates.first)
+    self.subjects.find_or_create_by_name(likely_subject)
   end
 
   def subject_samples
-    <<-eos
-      #{title}   #{title}   #{title}   #{title}   #{title}
-      #{description}   #{description}   #{description}
-      #{og_title}   #{og_title}   #{og_title}
-      #{keywords}   #{keywords}
-      #{lede}   #{lede}
-    eos
+    sample = ""
+    10.times { sample += "#{title}," }
+    10.times { sample += "#{og_title}," rescue "" }
+    sample += weighted_keywords.join(", ")
+    sample += "#{description}, #{lede}"
+    sample.squish
+  end
+
+  def weighted_keywords
+    keywords.map do |kw_ary|
+      weighted = []
+      eval("#{kw_ary.last}.times { |_| weighted.push(kw_ary.first)}")
+      weighted
+    end.flatten rescue []
   end
 
   def extractor

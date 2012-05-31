@@ -20,16 +20,16 @@ class Subject < ActiveRecord::Base
   private
 
   def set_abstract
-    if abstract = get_abstract
-      correct_case(abstract.heading)
-      self.abstract = parse_ddg_abstract(abstract).to_s
+    if _abstract = get_abstract
+      correct_case(_abstract.heading)
+      self.abstract = parse_ddg_abstract(_abstract).to_s
     end
   end
 
-  def parse_ddg_abstract(abstract)
-    abstract.abstract_text ||
-    abstract.definition ||
-    abstract.related_topics.values.map(&:first).map(&:text)
+  def parse_ddg_abstract(_abstract)
+    _abstract.abstract_text ||
+    _abstract.definition ||
+    _abstract.related_topics.values.map(&:first).map(&:text)
   end
 
   def correct_case(ddg_heading)

@@ -79,6 +79,8 @@ GEM
     debugger-linecache (1.1.1)
       debugger-ruby_core_source (>= 1.1.1)
     debugger-ruby_core_source (1.1.2)
+    domain_name (0.5.3)
+      unf (~> 0.0.3)
     domainatrix (0.0.10)
       addressable
     duck-duck-go (1.1.2)
@@ -92,6 +94,10 @@ GEM
       multipart-post (~> 1.1)
     fast-stemmer (1.0.1)
     fastimage (1.2.13)
+    gscraper (0.4.0)
+      json (~> 1.6)
+      mechanize (~> 2.0)
+      uri-query_params (~> 0.5)
     guess_html_encoding (0.0.4)
     haml (3.1.6)
     haml-rails (0.3.4)
@@ -116,6 +122,14 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    mechanize (2.5.1)
+      domain_name (~> 0.5, >= 0.5.1)
+      mime-types (~> 1.17, >= 1.17.2)
+      net-http-digest_auth (~> 1.1, >= 1.1.1)
+      net-http-persistent (~> 2.5, >= 2.5.2)
+      nokogiri (~> 1.4)
+      ntlm-http (~> 0.1, >= 0.1.1)
+      webrobots (~> 0.0, >= 0.0.9)
     metainspector (1.8.8)
       charguess (= 1.3.20111021164500)
       nokogiri (= 1.5.0)
@@ -124,7 +138,10 @@ GEM
     multi_json (1.3.5)
     multipart-post (1.1.5)
     mysql2 (0.3.11)
+    net-http-digest_auth (1.2.1)
+    net-http-persistent (2.6)
     nokogiri (1.5.0)
+    ntlm-http (0.1.1)
     oauth (0.4.6)
     oauth2 (0.6.1)
       faraday (~> 0.7)
@@ -225,6 +242,11 @@ GEM
     uglifier (1.2.4)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
+    unf (0.0.5)
+      unf_ext
+    unf_ext (0.0.4)
+    uri-query_params (0.7.0)
+    webrobots (0.0.13)
     wirble (0.1.3)
 
 PLATFORMS
@@ -239,11 +261,13 @@ DEPENDENCIES
   debugger
   domainatrix
   duck-duck-go
+  gscraper
   haml (>= 3.1.4)
   haml-rails (>= 0.3.4)
   hirb
   itslog
   jquery-rails
+  mechanize
   metainspector
   mysql2 (>= 0.3)
   omniauth

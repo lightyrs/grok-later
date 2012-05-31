@@ -5,6 +5,8 @@ gem 'mysql2', '>= 0.3'
 gem 'thin'
 
 gem 'curb'
+gem 'mechanize'
+gem 'gscraper'
 
 gem 'omniauth'
 gem 'omniauth-facebook'

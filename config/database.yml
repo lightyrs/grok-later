@@ -4,7 +4,7 @@ common: &common
   reconnect: false
   pool: 5
   username: root
-  password: password
+  password: matt22
   socket: /tmp/mysql.sock
 
 development:
