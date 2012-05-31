@@ -17,7 +17,7 @@ class Link < ActiveRecord::Base
   has_many :subjects, :through => :references
 
   def likely_subject
-    "Source::#{domain.classify}".constantize.extract_query(href)
+    "Source::#{domain.camelize}".constantize.extract_query(href)
   rescue NameError
     sorted_candidates.first
   end
@@ -108,8 +108,8 @@ class Link < ActiveRecord::Base
 
   def subject_samples
     sample = ""
-    10.times { sample += "#{title}," }
-    10.times { sample += "#{og_title}," rescue "" }
+    10.times { sample += "#{title}, " }
+    10.times { sample += "#{og_title}, " rescue "" }
     sample += weighted_keywords.join(", ")
     sample += "#{description}, #{lede}"
     sample.squish
